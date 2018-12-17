@@ -1,0 +1,64 @@
+
+    <!-- 右 -->
+    <div class="content">
+        <div class="header">
+            <h1 class="page-title">商品属性编辑</h1>
+        </div>
+        <div class="well">
+            <!-- edit form -->
+            <form id="tab" action="{:url('update')}" method="post">
+                <label>属性名称：</label>
+                <input type="text" name="attr_name" value="{$attr.attr_name}" class="input-xlarge">
+                <label>商品类型：</label>
+                <select name="type_id" class="dfinput">
+                    <option value="">--请选择--</option>
+                    {foreach $type as $v}
+                    <option value="{$v.id}" {if($v.id==$attr.type_id)}selected{/if}>{$v.type_name}</option>
+                    {/foreach}
+                </select>
+                <label>属性类型：</label>
+                <span>
+                    <input type="radio" name="attr_type" value="0"
+                           {if($attr.attr_type==0)}checked="checked"{/if}>唯一属性&emsp;
+                </span>
+                <span>
+                    <input type="radio" name="attr_type" value="1"
+                           {if($attr.attr_type==1)}checked="checked"{/if}>单选属性
+                </span>
+                <label>录入方式：</label>
+
+                <span class="input_type {if($attr.attr_type==1)} hide {/if}">
+                    <input type="radio" name="attr_input_type" value="0"
+                           {if($attr.attr_input_type==0)}checked="checked"{/if}>输入框
+                </span>
+                <span class="input_type {if($attr.attr_type==1)} hide {/if}">
+                    <input type="radio" name="attr_input_type" value="1"
+                           {if($attr.attr_input_type==1)}checked="checked"{/if}>下拉列表
+                </span>
+
+                <span class="input_type {if($attr.attr_type==0)} hide {/if}">
+                    <input type="radio" name="attr_input_type" value="2"
+                           {if($attr.attr_input_type==2)}checked="checked"{/if}>多选框
+                </span>
+
+                <label>可选值：</label>
+                <textarea name="attr_values" placeholder="请输入可选值，多个值之间请使用英文“,”分隔开" class="textinput">{$attr.attr_values}</textarea>
+                <label></label>
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" href="{:url('index')}">返回</a>
+
+            </form>
+        </div>
+        <!-- footer -->
+        <footer>
+            <hr>
+            <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+        </footer>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            $('input[name=attr_type]').change(function(){
+                $('.input_type').toggleClass('hide');
+            })
+        })
+    </script>

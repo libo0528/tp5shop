@@ -1,0 +1,119 @@
+    <script type="text/javascript" charset="utf-8" src="/plugins/ueditor/ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="/plugins/ueditor/ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <!-- 右 -->
+    <div class="content">
+        <div class="header">
+            <h1 class="page-title">商品分类新增</h1>
+        </div>
+
+        <!-- add form -->
+        <form action="{:url('save')}" method="post" id="tab" enctype="multipart/form-data">
+            <ul class="nav nav-tabs">
+              <li role="presentation" class="active"><a href="#basic" data-toggle="tab">基本信息</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="basic">
+                    <div class="well">
+
+                        <label>分类名称：</label>
+                        <input type="text" name="cat_name"><br>
+                        <select name="" id="cate_one" class="input-xlarge">
+                            <option value="0">请选择一级分类</option>
+                            {foreach $cate_one as $v}
+                            <option value="{$v.id}">{$v.cate_name}</option>
+                            {/foreach}
+                        </select><br>
+                        <select name="" id="cate_two" class="input-xlarge">
+                            <option value="">请选择二级分类</option>
+                        </select>
+                        <br>
+                        <select name="cate_id" id="cate_three" class="input-xlarge">
+                            <option value="">请选择三级分类</option>
+                        </select>
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" href="{:url('index')}">返回</a>
+            </div>
+        </form>
+        <!-- footer -->
+        <footer>
+            <hr>
+            <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+        </footer>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            UE.getEditor('editor');
+            $('.add').click(function(){
+                var add_div = '<div>[<a href="javascript:void(0);" class="sub">-</a>]商品图片：' +
+                    '<input type="file" name="goods_pics[]" value="" class="input-xlarge"></div>';
+                $(this).parent().after(add_div);
+            });
+            $('.sub').live('click',function(){
+                $(this).parent().remove();
+            });
+            //绑定一级分类的改变事件 根据一级分类获取二级分类
+            $('#cate_one').change(function(){
+                //先还原二三级目录
+                $('#cate_two').html(' <option value="">请选择二级分类</option>');
+                $('#cate_three').html('<option value="">请选择三级分类</option>');
+                //获取一级目录的id
+                var id=$(this).val();
+                //判断id 没选择的时候为空
+                if(id==''){return};
+                var data={
+                    'id':id
+                }
+                $.ajax({
+                    'type':'get',
+                    'url':"{:url('admin/category/getsubcate')}",
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+//                        接受数据成功后处理
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        var str='<option value="">请选择二级分类</option>';
+                        $.each(res.data ,function(i,v){
+                            //v是json对象 是具体的二级数据
+                            str+='<option value="'+v.id+'">'+v.cate_name+'</option>';
+                        });
+                        $('#cate_two').html(str);
+                    }
+                });
+            })
+            //绑定二级分类的改变事件 根据二级分类获取三级分类
+            $('#cate_two').change(function(){
+                //先还原二三级目录
+                $('#cate_three').html('<option value="">请选择三级分类</option>');
+                //获取一级目录的id
+                var id=$(this).val();
+                //判断id 没选择的时候为空
+                if(id==''){return};
+                var data={
+                    'id':id
+                }
+                $.ajax({
+                    'type':'get',
+                    'url':"{:url('admin/category/getsubcate')}",
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+//                        接受数据成功后处理
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        var str='<option value="">请选择三级分类</option>';
+                        $.each(res.data ,function(i,v){
+                            //v是json对象 是具体的二级数据
+                            str+='<option value="'+v.id+'">'+v.cate_name+'</option>';
+                        });
+                        $('#cate_three').html(str);
+                    }
+                });
+            })
+        });
+    </script>

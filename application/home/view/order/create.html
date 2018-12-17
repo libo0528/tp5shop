@@ -1,0 +1,265 @@
+	<meta http-equiv="X-UA-Compatible" content="IE=9; IE=8; IE=7; IE=EDGE">
+	<title>结算页</title>
+    <link rel="stylesheet" type="text/css" href="__STATIC__/home/css/pages-getOrderInfo.css" />
+	<script type="text/javascript" src="__STATIC__/home/js/pages/getOrderInfo.js"></script>
+	<!--主内容-->
+	<div class="cart py-container">
+		<div class="checkout py-container">
+			<div class="checkout-tit">
+				<h4 class="tit-txt">填写并核对订单信息</h4>
+			</div>
+			<div class="checkout-steps">
+				<!--收件人信息-->
+				<div class="step-tit">
+					<h5>收件人信息<span><a data-toggle="modal" data-target=".edit" data-keyboard="false" class="newadd">新增收货地址</a></span></h5>
+				</div>
+				<div class="step-cont">
+					<div class="addressInfo">
+						<ul class="addr-detail">
+							{if $address==[]}
+							<li class="addr-item">当前账户没有收货地址！<h4><span><a data-toggle="modal" data-target=".edit" data-keyboard="false" class="newadd">新增收货地址</a></span></h4></li>
+							{else\}
+							{foreach $address as $k=>$v}
+							<li class="addr-item" address_id="{$v.id}">
+								<div class="con name {if($k==0)}selected{/if}"><a href="javascript:;" ><em>
+									{$v.consignee}</em><span title="点击取消选择">&nbsp;</span></a></div>
+								<div class="con address">
+									<span class="consignee_name">{$v.consignee}</span>
+									<span class="consignee_address">{$v.address}</span>
+									<span class="consignee_phone">{$v.phone}</span>
+									<span class="base">默认地址</span>
+									<span class="edittext">
+										<a class="edit_address" data-toggle="modal" data-target=".edit" data-keyboard="false" >编辑</a>&nbsp;&nbsp;
+										<a class="delete_address" href="javascript:;">删除</a>
+									</span>
+								</div>
+								<div class="clearfix"></div>
+							</li>
+							{/foreach}
+							{/if}
+						</ul>
+						<!--添加地址-->
+                          <div  tabindex="-1" role="dialog" data-hasfoot="false" class="sui-modal hide fade edit">
+						  <div class="modal-dialog">
+						    <div class="modal-content">
+						      <div class="modal-header">
+						        <button type="button" data-dismiss="modal" aria-hidden="true" class="sui-close">×</button>
+						        <h4 id="myModalLabel" class="modal-title">添加收货地址</h4>
+						      </div>
+						      <div class="modal-body">
+						      	<form action="" class="sui-form form-horizontal" id="address">
+						      		 <div class="control-group">
+									    <label class="control-label">收货人：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium" name="consignee">
+									    </div>
+									  </div>
+                                     <div class="control-group">
+									    <label class="control-label">详细地址：</label>
+									    <div class="controls">
+									      <input type="text" class="input-large" name="address">
+									    </div>
+									  </div>
+                                     <div class="control-group">
+									    <label class="control-label">手机号：</label>
+									    <div class="controls">
+									      <input type="text" class="input-medium" name="phone">
+									    </div>
+									  </div>
+						      	</form>
+						      </div>
+						      <div class="modal-footer">
+						        <button type="button" data-ok="modal" class="sui-btn btn-primary btn-large">确定</button>
+						        <button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large">取消</button>
+						      </div>
+						    </div>
+						  </div>
+						</div>
+						 <!--确认地址-->
+					</div>
+					<div class="hr"></div>
+					<div class="recommendAddr">
+						<ul class="addr-detail">
+							<li class="addr-item">
+								<div class="con name"><a href="javascript:;" class="selected">匹配自提点<span title="点击取消选择">&nbsp;</a></div>
+								<div class="con address">时代思远书店 中关村软件园9号楼时代思远书店</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="hr"></div>
+				<!--支付和送货-->
+				<div class="payshipInfo">
+					<div class="step-tit">
+						<h5>支付方式</h5>
+					</div>
+					<div class="step-cont">
+						<ul class="payType">
+							{foreach $pay_type as $k=>$v}
+							<li class="{if($k=='alipay')}selected{/if}" pay_type="{$k}">{$v}<span title="点击取消选择"></span></li>
+							{/foreach}
+						</ul>
+					</div>
+					<div class="hr"></div>
+					<div class="step-tit">
+						<h5>送货清单</h5>
+					</div>
+					<div class="step-cont">
+						<ul class="send-detail">
+							<li>
+								<div class="sendType">
+									<span>配送方式：</span>
+									<ul>
+										<li>
+											<div class="con express">天天快递</div>
+											<div class="con delivery">配送时间：预计8月10日（周三）09:00-15:00送达</div>
+										</li>
+									</ul>
+								</div>
+								<div class="sendGoods">
+									<span>商品清单：</span>
+									{foreach $goods as $k=>$v}
+									<ul class="yui3-g">
+										<li class="yui3-u-1-6">
+											<span><img src="{$v.goods_logo}"/></span>
+										</li>
+										<li class="yui3-u-7-12">
+											<div class="desc">{$v.goods_name}</div>
+											<div class="seven">7天无理由退货</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="price">￥{$v.goods_price}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="num">X{$v.number}</div>
+										</li>
+										<li class="yui3-u-1-12">
+											<div class="exit">有货</div>
+										</li>
+									</ul>
+									{/foreach}
+								</div>
+							</li>
+							<li></li>
+							<li></li>
+						</ul>
+					</div>
+					<div class="hr"></div>
+				</div>
+				<div class="linkInfo">
+					<div class="step-tit">
+						<h5>发票信息</h5>
+					</div>
+					<div class="step-cont">
+						<span>普通发票（电子）</span>
+						<span>个人</span>
+						<span>明细</span>
+					</div>
+				</div>
+				<div class="cardInfo">
+					<div class="step-tit">
+						<h5>使用优惠/抵用</h5>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="order-summary">
+			<div class="static fr">
+				<div class="list">
+					<span><i class="number">{$total_number}</i>件商品，总商品金额</span>
+					<em class="allprice">¥{$total_price}</em>
+				</div>
+				<div class="list">
+					<span>返现：</span>
+					<em class="money">0.00</em>
+				</div>
+				<div class="list">
+					<span>运费：</span>
+					<em class="transport">0.00</em>
+				</div>
+			</div>
+		</div>
+		<div class="clearfix trade">
+			<div class="fc-price">应付金额:　<span class="price">¥{$total_price}</span></div>
+			<div class="fc-receiverInfo">寄送至:{$address!=[]?$address[0]['address']:''} 收货人：{$address!=[]?$address[0]['consignee']:''} {$address!=[]?$address[0]['phone']:''}</div>
+		</div>
+		<div class="submit">
+			<a class="sui-btn btn-danger btn-xlarge" href="javascript:;">提交订单</a>
+		</div>
+	</div>
+	<form action="{:url('save')}" method="post" id="orderForm">
+		<input type="hidden" name="cart_ids" value="{$Request.param.cart_ids}">
+		<input type="hidden" name="address_id" value="">
+		<input type="hidden" name="pay_type" value="">
+	</form>
+	<script type="text/javascript">
+		$(function () {
+		    //给选择收货地址绑定点击事件  更改 寄送至 的内容
+			$('.name').click(function () {
+				var consignee_name=$(this).closest('li').find('.consignee_name').html();
+				var consignee_address=$(this).closest('li').find('.consignee_address').html();
+				var consignee_phone=$(this).closest('li').find('.consignee_phone').html();
+				var str='寄送至:'+consignee_address+' 收货人：'+consignee_name+'  '+ consignee_phone;
+				$('.fc-receiverInfo').html(str);
+            });
+			//给提交订单绑定点击事件 收集订单信息 存到隐藏form
+			$('.submit').click(function () {
+				//收货地址
+				var address_id=$('.name.selected').closest('li').attr('address_id');
+				$('input[name=address_id]').val(address_id);
+				//支付方式
+				var pay_type=$('li.selected').attr('pay_type');
+				//console.log(pay_type);return;
+				$('input[name=pay_type]').val(pay_type);
+                //var a=$('input[name=pay_type]').val();
+				//console.log(a);return;
+				//提交表单
+				$('#orderForm').submit();
+            });
+			$('.btn-primary').click(function () {
+			    var consignee=$('input[name=consignee]').val();
+			    var phone=$('input[name=phone]').val();
+			    var address=$('input[name=address]').val();
+			    var data={
+			        'consignee':consignee,
+			        'phone':phone,
+			        'address':address,
+			    };
+			    //console.log(data);
+			    $.ajax({
+                    'url':"{:url('home/address/create')}",
+                    'type':'post',
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+                        //console.log(res);return;
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        //重新加载当前页面
+                        window.location.reload();
+                    }
+                });
+            });
+			$('.delete_address').click(function () {
+			    var id=$(this).closest('li.addr-item').attr('address_id');
+			    console.log(id);
+                var data={'id':id};
+                var that=this;
+                $.ajax({
+                    'url':"{:url('home/address/delete')}",
+                    'type':'post',
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+                        //console.log(res);return;
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        //移除当前地址所在元素
+                        $(that).closest('li.addr-item').remove();
+                    }
+                });
+            });
+        });
+	</script>

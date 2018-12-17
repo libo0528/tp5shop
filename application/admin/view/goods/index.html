@@ -1,0 +1,93 @@
+<style type="text/css">
+    .pagination li{list-style:none;float:left;margin-left:10px;
+        padding:0 10px;
+        background-color:#5a98de;
+        border:1px solid #ccc;
+        border-radius: 5px;
+        height:26px;
+        line-height:26px;
+        cursor:pointer;color:#fff;
+    }
+    .pagination li a{color:white;padding: 0;line-height: inherit;border: none;display: inline-block;
+        height:26px;}
+    .pagination li a:hover{background-color: #5a98de;}
+    .pagination li.active{background-color:white;color:gray;}
+    .pagination li.disabled{background-color:white;color:gray;}
+</style>
+<!-- 右 -->
+    <div class="content">
+        <div class="header">
+            <h1 class="page-title">商品列表</h1>
+        </div>
+
+        <div class="well">
+            <!-- search button -->
+            <form action="{:url('search')}" method="get" class="form-search">
+                <div class="row-fluid" style="text-align: left;">
+                    <div class="pull-left span4 unstyled">
+                        <p> 商品名称：<input class="input-medium" name="keyword" type="text"
+                                        value="{$Request.get.keyword}"></p>
+                    </div>
+                </div>
+                <button type="submit" class="btn">查找</button>
+                <a class="btn btn-primary" href="{:url('admin/goods/create')}">新增</a>
+            </form>
+        </div>
+        <div class="well">
+            <!-- table -->
+            <table class="table table-bordered table-hover table-condensed">
+                <thead>
+                    <tr>
+                        <th>编号</th>
+                        <th>商品名称</th>
+                        <th>商品价格</th>
+                        <th>商品数量</th>
+                        <th>商品logo</th>
+                        <th>添加时间</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+               <!-- {volist name="list" key="k" id="v" }
+                <tr class="info">
+                    <td>{$v.id}</td>
+                    <td><a href="javascript:void(0);">{$v->goods_name}</a></td>
+                    <td>{$v.goods_price}</td>
+                    <td>{$v['goods_number']}</td>
+                    <td><img src="__STATIC__/admin/img/goods04_thumb.jpg"></td>
+                    <td>{$v.create_time}</td>
+                    <td>
+                        <a href="{:url('admin/goods/edit',['id'=>$v.id])}"> 编辑 </a>
+                        <a href="javascript:void(0);" onclick="if(confirm('确认删除？')) location.href='{:url(\'admin/goods/delete\',[\'id\'=>$v.id])}'"> 删除 </a>
+                    </td>
+                </tr>
+                {/volist}-->
+                {foreach $list as $v}
+                    <tr class="info">
+                        <td>{$v.id}</td>
+                        <td><a href="javascript:void(0);">{$v->goods_name}</a></td>
+                        <td>{$v.goods_price}</td>
+                        <td>{$v['goods_number']}</td>
+                        <td><img src="{$v.goods_logo}"></td>
+                        <td>{$v.create_time}</td>
+                        <td>
+                            <a href="{:url('admin/goods/edit',['id'=>$v.id])}"> 编辑 </a>
+                            <a href="javascript:void(0);" onclick="if(confirm('确认删除？'))
+                                location.href='{:url(\'admin/goods/delete\',[\'id\'=>$v.id])}'"> 删除 </a>
+                        </td>
+                    </tr>
+                {/foreach}
+                </tbody>
+            </table>
+            <!-- pagination -->
+            <div class="">
+                {$list->render()}
+            </div>
+        </div>
+        
+        <!-- footer -->
+        <footer>
+            <hr>
+            <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+        </footer>
+    </div>

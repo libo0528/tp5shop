@@ -1,0 +1,262 @@
+<script type="text/javascript" charset="utf-8" src="/plugins/ueditor/ueditor.config.js"></script>
+<script type="text/javascript" charset="utf-8" src="/plugins/ueditor/ueditor.all.min.js"> </script>
+<script type="text/javascript" charset="utf-8" src="/plugins/ueditor/lang/zh-cn/zh-cn.js"></script>
+    <!-- 右 -->
+    <div class="content">
+        <div class="header">
+            <h1 class="page-title">商品编辑</h1>
+        </div>
+        
+        <!-- edit form -->
+        <form action="{:url('update')}" method="post" id="tab" enctype="multipart/form-data">
+            <ul class="nav nav-tabs">
+              <li role="presentation" class="active"><a href="#basic" data-toggle="tab">基本信息</a></li>
+              <li role="presentation"><a href="#desc" data-toggle="tab">商品描述</a></li>
+              <li role="presentation"><a href="#attr" data-toggle="tab">商品属性</a></li>
+              <li role="presentation"><a href="#pics" data-toggle="tab">商品相册</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane fade in active" id="basic">
+                    <div class="well">
+                        <input type="hidden" name="id" value="{$goods.id}">
+                        <label>商品名称：</label>
+                        <input type="text" name="goods_name" value="{$goods.goods_name}" class="input-xlarge">
+                        <label>商品价格：</label>
+                        <input type="text" name="goods_price" value="{$goods.goods_price}" class="input-xlarge">
+                        <label>商品数量：</label>
+                        <input type="text" name="goods_number" value="{$goods.goods_number}" class="input-xlarge">
+                        <label>商品logo：</label>
+                        <input type="file" name="goods_logo" value="" class="input-xlarge">
+                        <label>商品分类：</label>
+                        <select name="" class="input-xlarge" id="cate_one">
+                            <option value="">请选择一级分类</option>
+                            {foreach $cate_one_all as $v}
+                            <option value="{$v.id}" {if($v.id==$cate_two['pid'])} selected="selected"
+                            {/if}>{$v.cate_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="" class="input-xlarge" id="cate_two">
+                            <option value="">请选择二级分类</option>
+                            {foreach $cate_two_all as $v}
+                            <option value="{$v.id}" {if($v.id==$cate_three['pid'])} selected="selected"
+                                    {/if}>{$v.cate_name}</option>
+                            {/foreach}
+                        </select>
+                        <select name="cate_id" class="input-xlarge" id="cate_three">
+                            <option value="">请选择三级分类</option>
+                            {foreach $cate_three_all as $v}
+                            <option value="{$v.id}" {if($v.id==$goods['cate_id'])} selected="selected"
+                                    {/if}>{$v.cate_name}</option>
+                            {/foreach}
+                        </select>
+                    </div>
+                </div>
+                <div class="tab-pane fade in" id="desc">
+                    <div class="well">
+                        <label>商品简介：</label>
+                        <textarea value=""  id="editor" name="goods_introduce" rows="3" class="input-xlarge"
+                                  style="width: 800px;height: 500px;">{$goods.goods_introduce}</textarea>
+                    </div>
+                </div>
+                <div class="tab-pane fade in" id="attr">
+                    <div class="well">
+                        <label><b>商品类型：</b></label>
+                        <select name="type_id" class="input-xlarge">
+                            <option value="">请选择</option>
+                            {foreach $type as $v}
+                            <option value="{$v.id}" {if($v.id==$goods.type_id)}selected="selected"{/if}>{$v.type_name}</option>
+                            {/foreach}
+                        </select>
+                        <div id="attrs">
+                            {foreach $attribute as $v}
+                            <label><b>{$v.attr_name}</b></label>
+                            {if($v.attr_input_type=='0')}
+                            <input type="text" name="attr_value[{$v.id}][]" value=
+                                    "{$new_goodsattr[$v.id][0]|default=''}" class="input-xlarge">
+                            {elseif($v.attr_input_type=='1')/}
+                            <select name="attr_value[{$v.id}][]" id="">
+                                {foreach $v.attr_values as $value}
+                                <option value="{$value}" {if(isset($new_goodsattr[$v.id][0]) && $value==$new_goodsattr[$v.id][0])}selected="selected"{/if}>
+                                    {$value}</option>
+                                {/foreach}
+                            </select>
+                            {else/}
+                            {foreach $v.attr_values as $value}
+                            <input type="checkbox" value="{$value}" name="attr_value[{$v.id}][]"
+                                   {in name="value"
+                                   value="$new_goodsattr[$v.id]"}checked="checked"{/in}>{$value}
+                            {/foreach}
+                            {/if}
+                            {/foreach}
+                        </div>
+                    </div>
+                </div>
+                <div class="tab-pane fade in" id="pics">
+                    <div class="well">
+                            <div>[<a href="javascript:void(0);" class="add">+</a>]商品图片：<input type="file" name="goods_pics[]" value="" class="input-xlarge"></div>
+                    </div>
+                    <div class="well" id="goodspics">
+                        {foreach $pics as $v}
+                        <div>
+                            <img src="{$v.pics_sma}" style="width: 100px;">
+                            <a href="javascript:void(0);" class="delpics"
+                               pics_id="{$v.id}">[删除]</a>
+                        </div>
+                        {/foreach}
+                    </div>
+                </div>
+                <button class="btn btn-primary" type="submit">保存</button>
+                <a class="btn" href="{:url('index')}">返回</a>
+            </div>
+        </form>
+        <!-- footer -->
+        <footer>
+            <hr>
+            <p>© 2017 <a href="javascript:void(0);" target="_blank">ADMIN</a></p>
+        </footer>
+    </div>
+    <script type="text/javascript">
+        $(function(){
+            UE.getEditor('editor');
+            $('.add').click(function(){
+                var add_div = '<div>[<a href="javascript:void(0);" class="sub">-</a>]商品图片：<input type="file" name="goods_pics[]" value="" class="input-xlarge"></div>';
+                $(this).parent().after(add_div);
+            });
+            $('.sub').live('click',function(){
+                $(this).parent().remove();
+            });
+            //绑定一级分类的改变事件 根据一级分类获取二级分类
+            $('#cate_one').change(function(){
+                //先还原二三级目录
+                $('#cate_two').html(' <option value="">请选择二级分类</option>');
+                $('#cate_three').html('<option value="">请选择三级分类</option>');
+                //获取一级目录的id
+                var id=$(this).val();
+                //判断id 没选择的时候为空
+                if(id==''){return};
+                var data={
+                    'id':id
+                }
+                $.ajax({
+                    'type':'get',
+                    'url':"{:url('admin/category/getsubcate')}",
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+//                        接受数据成功后处理
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        var str='<option value="">请选择二级分类</option>';
+                        $.each(res.data ,function(i,v){
+                            //v是json对象 是具体的二级数据
+                            str+='<option value="'+v.id+'">'+v.cate_name+'</option>';
+                        });
+                        $('#cate_two').html(str);
+                    }
+                });
+            })
+            //绑定二级分类的改变事件 根据二级分类获取三级分类
+            $('#cate_two').change(function(){
+                //先还原二三级目录
+                $('#cate_three').html('<option value="">请选择三级分类</option>');
+                //获取一级目录的id
+                var id=$(this).val();
+                //判断id 没选择的时候为空
+                if(id==''){return};
+                var data={
+                    'id':id
+                }
+                $.ajax({
+                    'type':'get',
+                    'url':"{:url('admin/category/getsubcate')}",
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+//                        接受数据成功后处理
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        var str='<option value="">请选择三级分类</option>';
+                        $.each(res.data ,function(i,v){
+                            //v是json对象 是具体的二级数据
+                            str+='<option value="'+v.id+'">'+v.cate_name+'</option>';
+                        });
+                        $('#cate_three').html(str);
+                    }
+                });
+            })
+            $('.delpics').click(function(){
+                var id=$(this).attr('pics_id');
+//                console.log(id);return;
+//                if(id==''){return}
+                var data={'id':id};
+                var that=this;
+                //发送ajax请求
+                $.ajax({
+                    'url':"{:url('admin/goods/delpics')}",
+                    'type':'post',
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+                        if(res.code!=10000){
+                            alert('参数错误');return;
+                        }
+                        //返回数据正常 移除当前元素
+                        $(that).parent().remove();
+                    }
+                });
+            });
+            //给商品类型下拉框绑定时间 切换时显示不同内容 切换回去还能正常显示
+            var html=$('#attrs').html();   //保存原来的内容
+            $('select[name="type_id"]').change(function(){
+                //每次切换 情况下面内容
+                $('#attrs').html('');
+                //获取选中的id
+                var id=$(this).val();
+                if(id==''){return};
+                if(id=={$goods.type_id}){
+                    //切换回了初始内容 直接还原
+                    $('#attrs').html(html);
+                    return;
+                }
+                var data={'type_id':id};
+                //发送ajax请求
+                $.ajax({
+                    'url':"{:url('admin/attribute/getattr')}",
+                    'type':'post',
+                    'data':data,
+                    'dataType':'json',
+                    'success':function(res){
+                        if(res.code!=10000){
+                            alert(res.msg);return;
+                        }
+                        //遍历结果集 拼接字符串
+                        var str='';
+                        $.each(res.data,function(i,v){
+                            //v 是一个属性信息的json对象
+                            str+='<label><b>'+v.attr_name+':</b></label>';
+                            if(v.attr_input_type=='0'){
+                                //input输入框
+                                str+='<input type="text" name="attr_value['+v.id+'][]" value="" class="input-xlarge">';
+                            }else if(v.attr_input_type=='1'){
+                                //下拉列表
+                                str+='<select name="attr_value['+v.id+'][]">';
+                                $.each(v.attr_values,function(index,value){
+                                    str+='<option value="' + value + '">'+value+'</option>';
+                                });
+                                str+='</select>';
+                            }else{
+                                //多选框
+                                $.each(v.attr_values,function(index,value){
+                                    str+='<input type="checkbox" name="attr_value['+v.id+'][]" ' +
+                                        'value="' +value+ '">'+value;
+                                });
+                            }
+                        });
+                        $('#attrs').html(str);
+                    }
+                });
+            });
+        });
+    </script>
